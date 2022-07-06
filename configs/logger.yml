@@ -25,7 +25,7 @@ handlers:
     formatter: brief
     filename: log
     maxBytes: 1024000
-    backupCount: 5
+    backupCount: 10
 
 loggers:
   logger:
