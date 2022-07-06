@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../resnet-on-mnist/.idea/resnet-on-mnist.iml" filepath="$PROJECT_DIR$/../resnet-on-mnist/.idea/resnet-on-mnist.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/resnet-on-mnist.iml" filepath="$PROJECT_DIR$/.idea/resnet-on-mnist.iml" />
     </modules>
   </component>
 </project>

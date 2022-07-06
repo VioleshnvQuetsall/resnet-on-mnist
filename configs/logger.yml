@@ -24,7 +24,7 @@ handlers:
     level: INFO
     formatter: brief
     filename: log
-    maxBytes: 10240
+    maxBytes: 1024000
     backupCount: 5
 
 loggers:
