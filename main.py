@@ -81,10 +81,10 @@ def train_model(model: nn.Module,
             torch.save(model.state_dict(), save_path)
             print(f"Saved PyTorch Model State to {save_path}")
 
-    logger.info(f'    test loss: {test_loss}')
-    logger.info(f'    test correct: {test_correct}')
-    logger.info(f'    trigger loss: {trigger_loss}')
-    logger.info(f'    trigger correct: {trigger_correct}')
+    logger.info(f'  test loss: {test_loss}')
+    logger.info(f'  test correct: {test_correct}')
+    logger.info(f'  trigger loss: {trigger_loss}')
+    logger.info(f'  trigger correct: {trigger_correct}')
     # logger.info(f"{'Trigger' if with_trigger else 'Prepare'} Done!")
 
     return model
