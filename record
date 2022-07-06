@@ -1,0 +1,9 @@
+1-5 trigger 40,40 343 4
+6-10 scratch_trigger 0,40 343 4
+11-13 scratch_trigger 0,80 344 8
+14-15 trigger 40,40 344 16 # 14 gradient disappear tigger epoch 10
+16-17 scratch_trigger 0,40 344 16
+18-19 trigger 40,40 344 64
+20-21 scratch_trigger 40,40 344 64
+22-23 trigger 40,40 344 32
+24-25 scratch_trigger 40,40 344 32

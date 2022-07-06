@@ -51,10 +51,10 @@ def train_model(model: nn.Module,
             torch.save(model.state_dict(), save_path)
             print(f"Saved PyTorch Model State to {save_path}")
 
-    logger.info(f'  test loss: {test_loss}')
-    logger.info(f'  test correct: {test_correct}')
-    logger.info(f'  trigger loss: {trigger_loss}')
-    logger.info(f'  trigger correct: {trigger_correct}')
+    logger.info(f'  test_loss: {test_loss}')
+    logger.info(f'  test_correct: {test_correct}')
+    logger.info(f'  trigger_loss: {trigger_loss}')
+    logger.info(f'  trigger_correct: {trigger_correct}')
     # logger.info(f"{'Trigger' if with_trigger else 'Prepare'} Done!")
 
     return model
@@ -160,7 +160,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
         epochs=epochs[1],
         lr=1e-4,
         with_trigger=True,
-        count=16
+        count=32
     )
     display_weights(
         model=model,
@@ -172,7 +172,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
 
 def main():
     for name, task in zip(
-            [f'model{i}' for i in range(14, 18)],
+            [f'model{i}' for i in range(22, 26)],
             ['trigger'] * 2 + ['scratch_trigger'] * 2
     ):
         dir_path = f'files/{name}'
