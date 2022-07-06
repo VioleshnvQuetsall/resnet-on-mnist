@@ -5,6 +5,8 @@ from torch import nn
 import matplotlib.pyplot as plt
 
 import numpy as np
+from torchvision import datasets
+from torchvision.transforms import ToTensor
 
 from logger import get_logger
 from TriggerDataset import TriggerDataset
@@ -164,3 +166,30 @@ def display(model: nn.Module,
         # ax.ylim(y_min, y_max)
 
         ax.legend()
+
+
+def dataloaders(mnist_dir: str, trigger_path: str):
+    training_data = datasets.MNIST(
+        root=mnist_dir,
+        train=True,
+        download=True,
+        transform=ToTensor()
+    )
+    test_data = datasets.MNIST(
+        root=mnist_dir,
+        train=False,
+        download=True,
+        transform=ToTensor()
+    )
+    trigger_data = TriggerDataset(
+        trigger_path=trigger_path,
+        trigger_labels=None,
+        transform=None,
+        target_transform=None
+    )
+
+    train_dataloader = DataLoader(training_data, batch_size=32, shuffle=True)
+    test_dataloader = DataLoader(test_data, batch_size=32, shuffle=True)
+    trigger_dataloader = DataLoader(trigger_data, batch_size=4, shuffle=True)
+
+    return train_dataloader, test_dataloader, trigger_dataloader

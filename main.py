@@ -2,9 +2,7 @@ from typing import Optional
 
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
-from torchvision import datasets, models
-from torchvision.transforms import ToTensor
+from torchvision import models
 
 import os
 
@@ -13,36 +11,8 @@ import matplotlib.pyplot as plt
 import logging
 import logging.handlers
 
-from TriggerDataset import TriggerDataset
 from logger import get_logger
-from utils import train, test, train_with_trigger, display
-
-
-def dataloaders(mnist_dir: str, trigger_path: str):
-    training_data = datasets.MNIST(
-        root=mnist_dir,
-        train=True,
-        download=True,
-        transform=ToTensor()
-    )
-    test_data = datasets.MNIST(
-        root=mnist_dir,
-        train=False,
-        download=True,
-        transform=ToTensor()
-    )
-    trigger_data = TriggerDataset(
-        trigger_path=trigger_path,
-        trigger_labels=None,
-        transform=None,
-        target_transform=None
-    )
-
-    train_dataloader = DataLoader(training_data, batch_size=32, shuffle=True)
-    test_dataloader = DataLoader(test_data, batch_size=32, shuffle=True)
-    trigger_dataloader = DataLoader(trigger_data, batch_size=4, shuffle=True)
-
-    return train_dataloader, test_dataloader, trigger_dataloader
+from utils import train, test, train_with_trigger, display, dataloaders
 
 
 def train_model(model: nn.Module,
@@ -92,7 +62,6 @@ def train_model(model: nn.Module,
 
 def display_weights(
         model: nn.Module,
-        train_dataloader: DataLoader,
         save_path: Optional[str] = None,
         show: bool = True):
     if not (save_path or show):
@@ -182,7 +151,6 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
     )
     display_weights(
         model=model,
-        train_dataloader=train_dataloader,
         save_path=save_path[1],
         show=False
     )
@@ -196,7 +164,6 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
     )
     display_weights(
         model=model,
-        train_dataloader=train_dataloader,
         save_path=save_path[3],
         show=False
     )
@@ -205,8 +172,8 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
 
 def main():
     for name, task in zip(
-            [f'model{i}' for i in range(14, 16)],
-            ['scratch_trigger'] * 3
+            [f'model{i}' for i in range(14, 18)],
+            ['trigger'] * 2 + ['scratch_trigger'] * 2
     ):
         dir_path = f'files/{name}'
         if not os.path.isdir(dir_path):
