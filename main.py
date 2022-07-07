@@ -155,7 +155,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
         model=model,
         save_path=save_path[2],
         epochs=epochs[1],
-        lr=1e-3,
+        lr=1e-4,
         with_trigger=True,
         count=4
     )
