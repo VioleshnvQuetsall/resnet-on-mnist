@@ -40,22 +40,22 @@ def train_model(model: nn.Module,
         loss, correct = test(test_dataloader, model, loss_fn, device)
         test_loss.append(loss)
         test_correct.append(correct)
-        print(f"Test Error: Accuracy: {(100 * correct):>0.1f}%, Avg loss: {loss:>8f}")
+        logger.debug(f"Test Error: Accuracy: {(100 * correct):>0.1f}%, Avg loss: {loss:>8f}")
 
         loss, correct = test(trigger_dataloader, model, loss_fn, device)
         trigger_loss.append(loss)
         trigger_correct.append(correct)
-        print(f"Trigger Error: Accuracy: {(100 * correct):>0.1f}%, Avg loss: {loss:>8f}")
+        logger.debug(f"Trigger Error: Accuracy: {(100 * correct):>0.1f}%, Avg loss: {loss:>8f}")
 
         if save_path and t % 5 == 0:
             torch.save(model.state_dict(), save_path)
-            print(f"Saved PyTorch Model State to {save_path}")
+            logger.debug(f"Saved PyTorch Model State to {save_path}")
 
     logger.info(f'  test_loss: {test_loss}')
     logger.info(f'  test_correct: {test_correct}')
     logger.info(f'  trigger_loss: {trigger_loss}')
     logger.info(f'  trigger_correct: {trigger_correct}')
-    # logger.info(f"{'Trigger' if with_trigger else 'Prepare'} Done!")
+    logger.debug(f"{'Trigger' if with_trigger else 'Prepare'} Done!")
 
     return model
 
@@ -120,7 +120,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 f'{dir_path}/{name}.png',
                 f'{dir_path}/{model_name}.pth',
                 f'{dir_path}/{model_name}.png'
-            ], [40, 40]
+            ], [80, 80]
         ),
         'scratch_trigger': (
             [
@@ -128,7 +128,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 None,
                 f'{dir_path}/{model_name}.pth',
                 f'{dir_path}/{model_name}.png'
-            ], [0, 40]
+            ], [0, 160]
         ),
         'finetune': (
             [
@@ -160,7 +160,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
         epochs=epochs[1],
         lr=1e-4,
         with_trigger=True,
-        count=32
+        count=16
     )
     display_weights(
         model=model,
@@ -172,14 +172,15 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
 
 def main():
     for name, task in zip(
-            [f'model{i}' for i in range(22, 26)],
+            [f'model{i}' for i in range(26, 30)],
             ['trigger'] * 2 + ['scratch_trigger'] * 2
     ):
         dir_path = f'files/{name}'
         if not os.path.isdir(dir_path):
             os.mkdir(dir_path)
 
-        handler = logging.FileHandler(f'{dir_path}/log', 'a')
+        handler = logging.FileHandler(f'{dir_path}/log', 'w')
+        handler.setLevel(logging.INFO)
         logger.handlers.append(handler)
 
         model = models.resnet18(weights=None, num_classes=10)
