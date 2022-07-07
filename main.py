@@ -120,7 +120,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 f'{dir_path}/{name}.png',
                 f'{dir_path}/{model_name}.pth',
                 f'{dir_path}/{model_name}.png'
-            ], [40, 40]
+            ], [160, 160]
         ),
         'scratch_trigger': (
             [
@@ -128,7 +128,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 None,
                 f'{dir_path}/{model_name}.pth',
                 f'{dir_path}/{model_name}.png'
-            ], [0, 40]
+            ], [0, 320]
         ),
         'finetune': (
             [
@@ -160,7 +160,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
         epochs=epochs[1],
         lr=1e-4,
         with_trigger=True,
-        count=32
+        count=16
     )
     display_weights(
         model=model,
