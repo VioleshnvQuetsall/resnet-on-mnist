@@ -12,8 +12,8 @@ def get_logger() -> logging.Logger:
 
 
 def logger_test(logger: logging.Logger):
-    logger.info('info')
     logger.debug('debug')
+    logger.info('info')
     logger.warning('warning')
     logger.error('error')
     logger.critical('critical')

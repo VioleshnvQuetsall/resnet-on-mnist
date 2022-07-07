@@ -19,6 +19,7 @@ def train_with_trigger(train_dataloader: DataLoader,
                        loss_fn: nn.CrossEntropyLoss,
                        optimizer: torch.optim.Optimizer,
                        device: str):
+    logger = get_logger()
     model.train()
     size = len(train_dataloader.dataset)
     trigger_size = len(trigger_dataset)
@@ -39,7 +40,7 @@ def train_with_trigger(train_dataloader: DataLoader,
 
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+            logger.debug(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
 
 def train(dataloader: DataLoader,
@@ -47,6 +48,7 @@ def train(dataloader: DataLoader,
           loss_fn: nn.CrossEntropyLoss,
           optimizer: torch.optim.Optimizer,
           device: str):
+    logger = get_logger()
     size = len(dataloader.dataset)
     model.train()
     for batch, (X, y) in enumerate(dataloader):
@@ -63,7 +65,7 @@ def train(dataloader: DataLoader,
 
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+            logger.debug(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
 
 def test(dataloader: DataLoader,

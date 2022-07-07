@@ -15,13 +15,13 @@ formatters:
 handlers:
   console:
     class: logging.StreamHandler
-    level: INFO
+    level: DEBUG
     formatter: brief
     stream: ext://sys.stdout
 
   file:
     class: logging.handlers.RotatingFileHandler
-    level: INFO
+    level: DEBUG
     formatter: brief
     filename: log
     maxBytes: 1024000
@@ -29,7 +29,7 @@ handlers:
 
 loggers:
   logger:
-    level: INFO
+    level: DEBUG
     handlers: [ console, file ]
     propagate: no
 
