@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 from torchvision import datasets
-from torchvision.transforms import ToTensor
+from torchvision.transforms import ToTensor, Compose, Normalize
 
 from logger import get_logger
 from TriggerDataset import TriggerDataset
@@ -171,22 +171,26 @@ def display(model: nn.Module,
 
 
 def dataloaders(mnist_dir: str, trigger_path: str):
+    transform_train = Compose([
+        ToTensor(),
+        Normalize(mean=0.1307, std=0.3081)
+    ])
     training_data = datasets.MNIST(
         root=mnist_dir,
         train=True,
         download=True,
-        transform=ToTensor()
+        transform=transform_train
     )
     test_data = datasets.MNIST(
         root=mnist_dir,
         train=False,
         download=True,
-        transform=ToTensor()
+        transform=transform_train
     )
     trigger_data = TriggerDataset(
         trigger_path=trigger_path,
         trigger_labels=None,
-        transform=None,
+        transform=transform_train,
         target_transform=None
     )
 

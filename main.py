@@ -136,7 +136,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 f'{dir_path}/{model_name}.png',
                 None,
                 None
-            ], [40, 0]
+            ], [80, 0]
         )
     }
 
