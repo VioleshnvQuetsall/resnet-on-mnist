@@ -7,3 +7,8 @@
 20-21 scratch_trigger 40,40 344 64
 22-23 trigger 40,40 344 32
 24-25 scratch_trigger 40,40 344 32
+26-27 trigger 80,160 344 32
+28-29 scratch_trigger 80,160 344 32
+
+30-31 trigger 50,100 344 16
+32-33 scratch_trigger 50,100 344 16

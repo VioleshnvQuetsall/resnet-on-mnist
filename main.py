@@ -12,7 +12,7 @@ import logging
 import logging.handlers
 
 from logger import get_logger
-from utils import train, test, train_with_trigger, display, dataloaders
+from utils import train, test, display, dataloaders
 
 
 def train_model(model: nn.Module,
@@ -20,7 +20,7 @@ def train_model(model: nn.Module,
                 epochs: int,
                 lr: float,
                 with_trigger: bool,
-                count: Optional[int] = 4):
+                count: int = 4):
     if epochs == 0:
         return model
     loss_fn = nn.CrossEntropyLoss()
@@ -29,13 +29,9 @@ def train_model(model: nn.Module,
     test_loss, test_correct, trigger_loss, trigger_correct = [[] for _ in range(4)]
 
     for t in range(1, epochs + 1):
-        print(f"-------------------------------\nEpoch {t}")
+        logger.debug(f"-------------------------------\nEpoch {t}")
 
-        if with_trigger:
-            train_with_trigger(train_dataloader, trigger_dataloader.dataset,
-                               count, model, loss_fn, optimizer, device)
-        else:
-            train(train_dataloader, model, loss_fn, optimizer, device)
+        train(train_dataloader, model, loss_fn, optimizer, with_trigger, trigger_dataloader.dataset, count, device)
 
         loss, correct = test(test_dataloader, model, loss_fn, device)
         test_loss.append(loss)
@@ -47,7 +43,7 @@ def train_model(model: nn.Module,
         trigger_correct.append(correct)
         logger.debug(f"Trigger Error: Accuracy: {(100 * correct):>0.1f}%, Avg loss: {loss:>8f}")
 
-        if save_path and t % 5 == 0:
+        if save_path and t % 10 == 0:
             torch.save(model.state_dict(), save_path)
             logger.debug(f"Saved PyTorch Model State to {save_path}")
 
@@ -120,11 +116,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 f'{dir_path}/{name}.png',
                 f'{dir_path}/{model_name}.pth',
                 f'{dir_path}/{model_name}.png'
-<<<<<<< HEAD
-            ], [160, 160]
-=======
-            ], [80, 80]
->>>>>>> c6134415177272f135573267e792e9d81268b7a0
+            ], [50, 50]
         ),
         'scratch_trigger': (
             [
@@ -132,11 +124,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 None,
                 f'{dir_path}/{model_name}.pth',
                 f'{dir_path}/{model_name}.png'
-<<<<<<< HEAD
-            ], [0, 320]
-=======
-            ], [0, 160]
->>>>>>> c6134415177272f135573267e792e9d81268b7a0
+            ], [50, 50]
         ),
         'finetune': (
             [
@@ -144,7 +132,7 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 f'{dir_path}/{model_name}.png',
                 None,
                 None
-            ], [80, 0]
+            ], [50, 0]
         )
     }
 
@@ -155,7 +143,8 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
         save_path=save_path[0],
         epochs=epochs[0],
         lr=1e-3 if task != 'finetune' else 1e-4,
-        with_trigger=False
+        with_trigger=True if task == 'scratch_trigger' else False,
+        count=4
     )
     display_weights(
         model=model,
@@ -166,9 +155,9 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
         model=model,
         save_path=save_path[2],
         epochs=epochs[1],
-        lr=1e-4,
+        lr=1e-3,
         with_trigger=True,
-        count=16
+        count=4
     )
     display_weights(
         model=model,
@@ -180,8 +169,8 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
 
 def main():
     for name, task in zip(
-            [f'model{i}' for i in range(26, 30)],
-            ['trigger'] * 2 + ['scratch_trigger'] * 2
+            [f'model{i}' for i in range(37, 38)],
+            ['scratch_trigger']
     ):
         dir_path = f'files/{name}'
         if not os.path.isdir(dir_path):

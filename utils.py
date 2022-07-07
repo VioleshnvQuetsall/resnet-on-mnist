@@ -1,3 +1,5 @@
+from typing import Optional
+
 import torch
 from torch.utils.data import DataLoader
 from torch import nn
@@ -12,46 +14,22 @@ from logger import get_logger
 from TriggerDataset import TriggerDataset
 
 
-def train_with_trigger(train_dataloader: DataLoader,
-                       trigger_dataset: TriggerDataset,
-                       count: int,
-                       model: nn.Module,
-                       loss_fn: nn.CrossEntropyLoss,
-                       optimizer: torch.optim.Optimizer,
-                       device: str):
-    logger = get_logger()
-    model.train()
-    size = len(train_dataloader.dataset)
-    trigger_size = len(trigger_dataset)
-    model.train()
-    for batch, (X, y) in enumerate(train_dataloader):
-        trigger_X, trigger_y = trigger_dataset[torch.randint(trigger_size, (count,))]
-        X, y = torch.cat((X, trigger_X), 0), torch.cat((y, trigger_y), 0)
-        X, y = X.to(device), y.to(device)
-
-        # Compute prediction error
-        pred = model(X)
-        loss = loss_fn(pred, y)
-
-        # Backpropagation
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        if batch % 100 == 0:
-            loss, current = loss.item(), batch * len(X)
-            logger.debug(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
-
-
-def train(dataloader: DataLoader,
+def train(train_dataloader: DataLoader,
           model: nn.Module,
           loss_fn: nn.CrossEntropyLoss,
           optimizer: torch.optim.Optimizer,
+          with_trigger: bool,
+          trigger_dataset: TriggerDataset,
+          count: int,
           device: str):
     logger = get_logger()
-    size = len(dataloader.dataset)
     model.train()
-    for batch, (X, y) in enumerate(dataloader):
+    size = len(train_dataloader.dataset)
+    model.train()
+    for batch, (X, y) in enumerate(train_dataloader):
+        if with_trigger:
+            trigger_X, trigger_y = trigger_dataset.random_choices(count)
+            X, y = torch.cat((X, trigger_X), 0), torch.cat((y, trigger_y), 0)
         X, y = X.to(device), y.to(device)
 
         # Compute prediction error
@@ -173,8 +151,9 @@ def display(model: nn.Module,
 def dataloaders(mnist_dir: str, trigger_path: str):
     transform_train = Compose([
         ToTensor(),
-        Normalize(mean=0.1307, std=0.3081)
+        Normalize(mean=[0.1307], std=[0.3081])
     ])
+
     training_data = datasets.MNIST(
         root=mnist_dir,
         train=True,
@@ -194,8 +173,8 @@ def dataloaders(mnist_dir: str, trigger_path: str):
         target_transform=None
     )
 
-    train_dataloader = DataLoader(training_data, batch_size=32, shuffle=True)
-    test_dataloader = DataLoader(test_data, batch_size=32, shuffle=True)
+    train_dataloader = DataLoader(training_data, batch_size=32, shuffle=True, num_workers=4)
+    test_dataloader = DataLoader(test_data, batch_size=32, shuffle=True, num_workers=4)
     trigger_dataloader = DataLoader(trigger_data, batch_size=4, shuffle=True)
 
     return train_dataloader, test_dataloader, trigger_dataloader
