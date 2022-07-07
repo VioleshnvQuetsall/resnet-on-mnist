@@ -120,7 +120,11 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 f'{dir_path}/{name}.png',
                 f'{dir_path}/{model_name}.pth',
                 f'{dir_path}/{model_name}.png'
+<<<<<<< HEAD
+            ], [160, 160]
+=======
             ], [80, 80]
+>>>>>>> c6134415177272f135573267e792e9d81268b7a0
         ),
         'scratch_trigger': (
             [
@@ -128,7 +132,11 @@ def trigger_helper(model: nn.Module, task: str, name: str, dir_path: str):
                 None,
                 f'{dir_path}/{model_name}.pth',
                 f'{dir_path}/{model_name}.png'
+<<<<<<< HEAD
+            ], [0, 320]
+=======
             ], [0, 160]
+>>>>>>> c6134415177272f135573267e792e9d81268b7a0
         ),
         'finetune': (
             [
